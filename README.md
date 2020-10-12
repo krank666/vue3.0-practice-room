@@ -121,3 +121,102 @@ createWebHistory 这两个函数
 ```
 
 运行 npm run serve 查看效果了
+
+## 三、Setup钩子的使用
+
+1. 入口方法setup
+
+setup 可以算是一个生命周期，它也替代了之前的 created beforeCreate 等 如果非要研究它的时机，官方给出的是，它在beforeCreate之前调用
+
+并且它提代之前的包裹模式，我们在这里面去声明我们之前在data中写的那些参数，每个setup需要return一个object供其他地方使用。然后还可以使用computed等之前用的方法
+
+我小列一下 下面给出示例
+
+ref 需要return的简单响应式数据
+
+reactive 需要return的深层响应式数据
+
+readonly 需要return的深层只读相应数据
+
+watchEffect 类似于react hooks 这个方法内部的任何依赖发生变化，它都会执行一次
+
+watch vue2的watch
+
+onMounted  挂载完成后的生命周期
+
+onUpdated  组件更新的生命周期
+
+onUnmounted 组件被卸载的生命周期
+
+这里简单说一下 ref和reactive
+
+新手可以理解为 ref为简单数据类型声明 reactive用来做复杂数据类型声明 
+
+从监听层即说的话  ref这里声明的数据 监听层级为浅层  reactive 监听层级为深层
+
+再从代码的风格来说的话 ref为扁平化的 reactive为类似于object这样的
+
+我们上个代码 看看效果
+
+``` vue
+
+<template>
+  <div class="myPage">
+    <h1>这是我的第一个vue3.0项目</h1>
+    <h2>{{count}}</h2>
+    <h3>{{person.name}}</h3>
+    <h3>{{person.sex}}</h3>
+    <h3>{{person.age}}</h3>
+
+  </div>
+</template>
+
+<script>
+import { ref, reactive } from "vue";
+export default {
+  setup() {
+    const count = ref(0);
+
+    console.log(count)   // 建议打印看看内部内容 （template会直接取它的value 在另一个reactive包裹的对象中）这两种情况 不需要自己去count.value  其他地方 一般都要带.value
+
+    const add = () => {count.value++}  //这里是声明方法 一样要return出去
+
+    const person = reactive({ name: "qm", sex: true, age: 18 });
+
+    console.log(person)  // 建议打印看看内部内容
+    // return 的属性会暴露给模板，模板中可以直接使用,这里没有 return 的， 无法在模板中使用  (官网说的)
+
+    onMounted(()=>{
+      console.log(123)
+    })
+    onUpdated(()=>{
+      console.log(456)
+    })
+    onUnmounted(()=>{
+      console.log(789)
+    })
+     watchEffect(()=>{
+      console.log(count.value)   // 对内部所设计到的变化的内容进行监听 当这个方法内部的内容设计的变化的时候 会触发当前函数 这里 如果count的value变化了 就会执行打印
+    })
+    watch(() => count.value, val => {
+      console.log( `当前的count值${val}` )
+    })   // watch 单条监听
+    watch(() => [count.value,person.age], (val, age) => {
+      console.log( `当前的count值${val},当前的age值${age}` )
+    })   // watch 多条监听
+    return {
+      count,
+      person,
+      add
+    };
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.myPage {
+  color: blue;
+}
+</style>
+
+```
