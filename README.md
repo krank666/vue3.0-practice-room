@@ -220,3 +220,15 @@ export default {
 </style>
 
 ```
+
+## 四、在setup中获取this？
+
+vue3里面不会使用 this去寻找实例了，这里它提供了getCurrentInstance方法来获取实例，上代码
+
+``` javascript
+    const {
+        ctx
+    } = getCurrentInstance()
+    console.log(getCurrentInstance()) //分析一下内部的东西有什么
+    console.log(ctx.$router) // 找一下方法 找一下$route  (currentRoute)   $router 和 $route 就和以前一样用法了
+```
