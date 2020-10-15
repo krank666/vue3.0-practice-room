@@ -232,3 +232,83 @@ vue3里面不会使用 this去寻找实例了，这里它提供了getCurrentInst
     console.log(getCurrentInstance()) //分析一下内部的东西有什么
     console.log(ctx.$router) // 找一下方法 找一下$route  (currentRoute)   $router 和 $route 就和以前一样用法了
 ```
+
+## 五 在vue3中使用vuex
+
+在 vue3里面怎么使用vuex呢？其实我想说这是最简单的 因为用法基本没变
+
+我们先来看看怎么去创造一个vuex
+
+```javascript
+
+import { createStore } from 'vuex'
+import { user } from "@/store/user"
+export default createStore({
+    modules: {
+        user
+    }
+})
+
+```
+
+然后我们看看user这个modules里面是什么样子的
+
+```javascript
+
+export const user = {
+    namespaced: true,
+    state: {
+        username: "qimiao"
+    },
+    mutations: {
+        changeUsername(state, username) {
+            state.username = username
+        }
+    },
+    actions: {
+        actionUsername({ commit }) {
+            console.log(123)
+        }
+    },
+    getters: {
+        getUsername(state) {
+            return state.username
+        }
+    }
+}
+
+```
+
+我们来看看在vue里面怎么使用的
+``` vue
+<template>
+  <div class="myPage">
+    <h1>这是我的第一个vue3.0项目</h1>
+    <h4>{{username}}</h4>
+  </div>
+</template>
+
+<script>
+import {getCurrentInstance,computed } from "vue";
+import { useStore } from 'vuex';
+export default {
+  setup() {
+    const { ctx } = getCurrentInstance()
+    console.log(getCurrentInstance())   //分析一下内部的东西有什么
+    console.log(ctx.$store,useStore()) // 这里是获取到vuex  两种方案都可以 剩下的操作就一样了 暂时不知道怎么用辅助函数 mapGetters ... 等等
+   const username = computed(()=>ctx.$store.getters["user/getUsername"])
+   console.log(ctx.$store.getters)  // dispatch commit 等都一样
+   return {
+      username,
+    };
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.myPage {
+  color: blue;
+}
+</style>
+
+```
