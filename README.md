@@ -360,3 +360,97 @@ a {
 
 
 ```
+
+## 补充讲解、provide 和 inject  (可能 你并不需要 vuex)
+
+先解释一下 
+
+>provide() 和 inject() 可以实现嵌套组件之间的数据传递。
+>这两个函数只能在 setup() 函数中使用。
+>父级组件中使用 provide() 函数向下传递数据。
+>子级组件中使用 inject() 获取上层传递过来的数据。
+
+如果父组件provide了 那么 他的所有的子 孙 等等等等 都可以通过inject获取参数
+
+这两个属性让我们可以做到让单个vue系统中的组件可以直接访问指定组件并且做对应操作
+
+我们就地取材 在Home.vue 和 HelloWorld中体验一下
+
+```vue
+
+// hello.vue
+
+<template>
+  <div class="hello">
+    <h1>{{ msg }}</h1>
+  </div>
+</template>
+
+<script>
+import { getCurrentInstance, inject,reactive } from "vue";
+
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  setup(){
+    const {ctx} = getCurrentInstance()
+    console.log(ctx.msg) // 类似 $emit $parent $refs 等之前那些带$的 都在 ctx上
+    const that = getCurrentInstance()
+    console.log(that)
+    // 类似 render，JSX，createElement等这些都在getCurrentInstance上
+    console.log(inject("qm"))
+  },
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="less">
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>
+
+```
+
+
+```vue
+
+// Home.vue
+
+<template>
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png" />
+    <HelloWorld msg="Welcome to Your Vue.js App" />
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+import HelloWorld from '@/components/HelloWorld.vue'
+import {setup,provide} from 'vue'
+export default {
+  name: 'Home',
+  components: {
+    HelloWorld
+  },
+  setup(){
+    provide("qm", "我是奇淼挂在provide的属性")  //这里挂载上
+  }
+}
+</script>
+
+
+```
