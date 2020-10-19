@@ -258,7 +258,7 @@ export default createStore({
 export const user = {
     namespaced: true,
     state: {
-        username: "qimiao"
+        username: "krank"
     },
     mutations: {
         changeUsername(state, username) {
