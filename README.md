@@ -400,7 +400,7 @@ export default {
     const that = getCurrentInstance()
     console.log(that)
     // 类似 render，JSX，createElement等这些都在getCurrentInstance上
-    console.log(inject("qm"))
+    console.log(inject("krank"))
   },
 }
 </script>
