@@ -181,7 +181,7 @@ export default {
 
     const add = () => {count.value++}  //这里是声明方法 一样要return出去
 
-    const person = reactive({ name: "qm", sex: true, age: 18 });
+    const person = reactive({ name: "krank", sex: true, age: 18 });
 
     console.log(person)  // 建议打印看看内部内容
     // return 的属性会暴露给模板，模板中可以直接使用,这里没有 return 的， 无法在模板中使用  (官网说的)
