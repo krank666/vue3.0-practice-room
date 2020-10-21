@@ -447,7 +447,7 @@ export default {
     HelloWorld
   },
   setup(){
-    provide("qm", "我是奇淼挂在provide的属性")  //这里挂载上
+    provide("krank", "我是krank挂在provide的属性")  //这里挂载上
   }
 }
 </script>
